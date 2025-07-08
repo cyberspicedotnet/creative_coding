@@ -57,7 +57,7 @@
 
       sketches.forEach(({ title, folder, thumbnail, alt }) => {
         const link = document.createElement('a');
-        link.href = `sketches/${folder}/`;
+        link.href = `${folder}/`;
         link.className = 'card';
         link.setAttribute('role', 'listitem');
         link.setAttribute('aria-label', title);
