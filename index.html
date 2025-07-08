@@ -3,15 +3,77 @@
   <head>
     <meta charset="UTF-8" />
     <title>My p5.js Sketches</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-      body { font-family: sans-serif; padding: 2em; }
-      a { display: block; margin: 1em 0; }
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 0;
+        padding: 2rem;
+        background: #f8f9fa;
+        color: #333;
+      }
+      h1 {
+        text-align: center;
+      }
+      .grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        margin-top: 2rem;
+      }
+      .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s;
+      }
+      .card:hover {
+        transform: scale(1.03);
+      }
+      .card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+      }
+      .card-title {
+        padding: 1rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
     <h1>My p5.js Sketches</h1>
-    <a href="p5/bubble_class/">Sketch 1</a>
-    <a href="p5/example_coordinates/">Sketch 2</a>
-    <!-- Add more as needed -->
+    <main class="grid" role="list" id="sketchGrid">
+      <!-- Cards will be injected here -->
+    </main>
+
+    <script src="sketches.js"></script>
+    <script>
+      const grid = document.getElementById('sketchGrid');
+
+      sketches.forEach(({ title, folder, thumbnail, alt }) => {
+        const link = document.createElement('a');
+        link.href = `sketches/${folder}/`;
+        link.className = 'card';
+        link.setAttribute('role', 'listitem');
+        link.setAttribute('aria-label', title);
+
+        const img = document.createElement('img');
+        img.src = thumbnail || 'fallback.jpg';
+        img.alt = alt || title;
+
+        const caption = document.createElement('div');
+        caption.className = 'card-title';
+        caption.textContent = title;
+
+        link.appendChild(img);
+        link.appendChild(caption);
+        grid.appendChild(link);
+      });
+    </script>
   </body>
 </html>
