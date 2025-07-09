@@ -43,37 +43,72 @@
         font-size: 1.1rem;
         font-weight: bold;
       }
+
+  #tagSearch {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem auto;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
     </style>
   </head>
   <body>
     <h1>My p5.js Sketches</h1>
+
+    <input type="text" id="tagSearch" placeholder="Search by tag..." aria-label="Search sketches by tag" />
+
     <main class="grid" role="list" id="sketchGrid">
       <!-- Cards will be injected here -->
     </main>
 
-    <script src="sketches.js"></script>
-    <script>
-      const grid = document.getElementById('sketchGrid');
+   <script src="sketches.js"></script>
+<script>
+  const grid = document.getElementById('sketchGrid');
+  const input = document.getElementById('tagSearch');
 
-      sketches.forEach(({ title, folder, thumbnail, alt }) => {
-        const link = document.createElement('a');
-        link.href = `${folder}/`;
-        link.className = 'card';
-        link.setAttribute('role', 'listitem');
-        link.setAttribute('aria-label', title);
+  function renderSketches(filter = "") {
+    grid.innerHTML = "";
 
-        const img = document.createElement('img');
-        img.src = thumbnail || 'fallback.jpg';
-        img.alt = alt || title;
+    const lowerFilter = filter.toLowerCase();
 
-        const caption = document.createElement('div');
-        caption.className = 'card-title';
-        caption.textContent = title;
+    sketches.forEach(({ title, folder, thumbnail, alt, tags }) => {
+      const tagMatch = !filter || tags.some(tag => tag.toLowerCase().includes(lowerFilter));
+      if (!tagMatch) return;
 
-        link.appendChild(img);
-        link.appendChild(caption);
-        grid.appendChild(link);
-      });
-    </script>
+      const link = document.createElement('a');
+      link.href = `sketches/${folder}/`;
+      link.className = 'card';
+      link.setAttribute('role', 'listitem');
+      link.setAttribute('aria-label', title);
+
+      const img = document.createElement('img');
+      img.src = thumbnail || 'fallback.jpg';
+      img.alt = alt || title;
+      img.onerror = () => { img.src = 'fallback.jpg'; };
+
+      const caption = document.createElement('div');
+      caption.className = 'card-title';
+      caption.innerHTML = `${title}<br><small>${tags.join(', ')}</small>`;
+
+      link.appendChild(img);
+      link.appendChild(caption);
+      grid.appendChild(link);
+    });
+  }
+
+  input.addEventListener('input', () => {
+    renderSketches(input.value);
+  });
+
+  // Initial render
+  renderSketches();
+</script>
+
   </body>
 </html>
